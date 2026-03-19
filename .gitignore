@@ -1,0 +1,21 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables (keep API keys safe!)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ZIP exports
+*.zip
+
+.env

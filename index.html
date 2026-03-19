@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Narrative Engine</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="noise"></div>
+
+    <header>
+        <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">☀</button>
+        <div class="logo-wrap">
+            <div class="logo-icon">✧</div>
+            <h1 class="logo-text">MURF AI Narrative</h1>
+        </div>
+        <div class="tagline">Voice-Driven Interactive Experience</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="summary">
+            <span class="tab-icon">✎</span>
+            Summarize
+        </button>
+        <button class="tab-btn" data-tab="story">
+            <span class="tab-icon">★</span>
+            Story
+        </button>
+    </div>
+
+    <main>
+        <!-- SUMMARIZE TAB -->
+        <section id="tab-summary" class="tab-panel active">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h2>Summarizer</h2>
+                    <p class="panel-desc">Paste text to condense and hear it spoken aloud.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field full-width">
+                        <label for="summary-input">Text or PDF to Summarize</label>
+                        <div class="upload-container" style="margin-bottom: 12px;">
+                            <label for="summary-file" class="upload-btn">
+                                <span class="upload-icon">📄</span> <span id="file-name-display">Upload PDF Document</span>
+                            </label>
+                            <button id="remove-pdf-btn" class="remove-pdf-btn hidden" title="Remove PDF">✕ Remove</button>
+                            <input type="file" id="summary-file" accept=".pdf" class="hidden">
+                        </div>
+                        <textarea id="summary-input" rows="5" placeholder="Or enter a long text here manually..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="summary-tone">Summary Tone</label>
+                        <div class="select-wrap">
+                            <select id="summary-tone">
+                                <option value="neutral">Neutral & Direct</option>
+                                <option value="academic">Academic & Formal</option>
+                                <option value="casual">Casual & Friendly</option>
+                                <option value="humorous">Humorous & Lighthearted</option>
+                                <option value="sarcastic">Sarcastic & Witty</option>
+                                <option value="poetic">Poetic & Expressive</option>
+                                <option value="dramatic">Dramatic & Intense</option>
+                                <option value="pessimistic">Pessimistic & Cynical</option>
+                                <option value="optimistic">Optimistic & Cheerful</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="summary-voice">Murf Voice</label>
+                        <div class="select-wrap">
+                            <select id="summary-voice">
+                                <option value="en-US-marcus">Marcus (Deep/Authoritative/Angry)</option>
+                                <option value="en-US-cooper">Cooper (Conversational/Happy/Sad)</option>
+                                <option value="en-US-ken">Ken (Neutral/Promo)</option>
+                                <option value="en-US-natalie">Natalie (Conversational)</option>
+                                <option value="en-UK-hazel">Hazel (Warm/British)</option>
+                                <option value="en-US-terrell">Terrell (Conversational/Promo)</option>
+                                <option value="en-US-edmund">Edmund (Somber/Sad)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summarize-actions">
+                    <button id="summarize-btn" class="primary-btn">
+                        <span class="btn-text">Generate Summary</span>
+                        <span class="btn-loader hidden">⟳</span>
+                    </button>
+                    <button id="clear-summary-btn" class="clear-btn" title="Erase everything and start again">🗑 Clear All</button>
+                </div>
+
+                <div id="summary-error" class="error-box hidden"></div>
+
+                <div id="summary-output" class="output-box hidden">
+                    <div class="output-header">
+                        <div class="output-label">Result</div>
+                        <button id="regenerate-summary-btn" class="regen-btn" title="Regenerate summary">🔄 Regenerate</button>
+                    </div>
+                    <p id="summary-text"></p>
+                    <div class="audio-controls">
+                        <button id="speak-summary-btn" class="voice-btn">▶ Listen</button>
+                        <div id="summary-player-ui" class="custom-player hidden">
+                            <button id="summary-play-btn" class="player-play-btn">▶</button>
+                            <span id="summary-time">0:00</span>
+                            <input type="range" id="summary-timeline" class="player-timeline" value="0" min="0" step="0.1">
+                            <span id="summary-duration">0:00</span>
+                        </div>
+                        <audio id="summary-audio" class="hidden"></audio>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORY TAB -->
+        <section id="tab-story" class="tab-panel">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h2>Interactive Narrative</h2>
+                    <p class="panel-desc">A voice-acted branching story, generated in real-time.</p>
+                </div>
+
+                <div id="story-controls" class="form-grid" style="transition: opacity 0.3s; pointer-events: auto;">
+                    <div class="field">
+                        <label for="story-genre">Genre</label>
+                        <div class="select-wrap">
+                            <select id="story-genre">
+                                <option value="cyberpunk">Cyberpunk Mystery</option>
+                                <option value="fantasy">Dark Fantasy</option>
+                                <option value="scifi">Deep Space Horror</option>
+                                <option value="post-apocalyptic">Post-Apocalyptic Survival</option>
+                                <option value="cozy-mystery">Cozy Village Mystery</option>
+                                <option value="steampunk">Steampunk Adventure</option>
+                                <option value="high-fantasy">High Fantasy Epic</option>
+                                <option value="noir">1950s Noir Crime</option>
+                                <option value="historical">Historical Fiction (Roman Empire)</option>
+                                <option value="superhero">Superhero Origin Story</option>
+                                <option value="lovecraftian">Lovecraftian Cosmic Horror</option>
+                                <option value="zombie">Zombie Apocalypse</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="story-tone">Narrative Tone</label>
+                        <div class="select-wrap">
+                            <select id="story-tone">
+                                <option value="suspenseful">Suspenseful & Tense</option>
+                                <option value="melancholic">Melancholic & Somber</option>
+                                <option value="action-packed">Action-Packed & Fast-Paced</option>
+                                <option value="comical">Comical & Absurd</option>
+                                <option value="romantic">Romantic & Passionate</option>
+                                <option value="gritty">Gritty & Realistic</option>
+                                <option value="surreal">Surreal & Dreamlike</option>
+                                <option value="whimsical">Whimsical & Magical</option>
+                                <option value="terrifying">Terrifying & Dread-inducing</option>
+                                <option value="heroic">Heroic & Epic</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field full-width">
+                        <label for="story-voice">Narrator Voice</label>
+                        <div class="select-wrap">
+                            <select id="story-voice">
+                                <option value="en-US-marcus">Marcus (Deep/Authoritative Narrator)</option>
+                                <option value="en-US-cooper">Cooper (Expressive/Dramatic Narrator)</option>
+                                <option value="en-US-edmund">Edmund (Somber/Mystery Narrator)</option>
+                                <option value="en-UK-hazel">Hazel (Warm/Fantasy Narrator)</option>
+                                <option value="en-US-ken">Ken (Thrill/Suspense Narrator)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="premise-container field full-width" style="margin-top: 24px;">
+                        <label for="story-premise">Custom Premise (Optional)</label>
+                        <textarea id="story-premise" class="premise-input" rows="3" placeholder="Write a custom premise or character, or leave blank to start a random story..."></textarea>
+                    </div>
+                </div>
+
+                <div class="action-buttons-row">
+                    <button id="start-story-btn" class="primary-btn">
+                        <span class="btn-text">Start Adventure</span>
+                        <span class="btn-loader hidden">⟳</span>
+                    </button>
+                    <button id="toggle-bgm-btn" class="bgm-btn">
+                        <span class="btn-text">♫ Toggle Vibes</span>
+                    </button>
+                </div>
+                
+                <audio id="bgm-player" loop class="hidden"></audio>
+
+                <div id="story-error" class="error-box hidden"></div>
+
+                <div id="story-output" class="output-box hidden">
+                    <div id="story-segments"></div>
+
+                    <div id="choice-buttons" class="choice-buttons hidden">
+                        <!-- Dynamic buttons will be injected here -->
+                    </div>
+
+                    <div class="audio-controls"
+                        style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 18px;">
+                        <button id="speak-story-btn" class="voice-btn">▶ Narrate Latest</button>
+                        <div id="story-player-ui" class="custom-player hidden">
+                            <button id="story-play-btn" class="player-play-btn">▶</button>
+                            <span id="story-time">0:00</span>
+                            <input type="range" id="story-timeline" class="player-timeline" value="0" min="0" step="0.1">
+                            <span id="story-duration">0:00</span>
+                        </div>
+                        <audio id="story-audio" class="hidden"></audio>
+                    </div>
+
+                    <button id="reset-story-btn" class="reset-btn">Reset Story</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Powered by <strong>Murf AI</strong> + <strong>Google Gemini</strong></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
